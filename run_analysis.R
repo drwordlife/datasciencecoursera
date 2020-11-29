@@ -168,6 +168,10 @@ trainWearableData <- data.frame(
 )
 
 wearableData <- rbind(testWearableData, trainWearableData)
-wearableDataMeans <- lapply(wearableData[1:66], tapply, list(wearableData$subject, wearableData$activity), mean)
+
+library(dplyr)
+wearableDataMeans <- wearableData %>% group_by(activity, subject) %>%
+  summarize(across(tBodyAcc_mean_X:fBodyGyroJerkMag_std, list(mean), .names = "average_{.col}"))
+
 write.table(wearableData, 'wearableData.txt', row.names = FALSE)
 write.table(wearableDataMeans, 'wearableDataMeans.txt', row.names = FALSE)
